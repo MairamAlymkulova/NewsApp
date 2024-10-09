@@ -8,7 +8,7 @@
 import UIKit
 
 extension AllNewsViewController: CustomTableViewDelegate{
-    func didSelectArticle(article: NewsArticlePreview) {
+    func didSelectArticle(article: NewsDetail) {
         coordinator?.showNewsDetail(for: article)
     }
 }

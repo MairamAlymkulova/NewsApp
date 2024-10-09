@@ -10,7 +10,7 @@ import UIKit
 class CustomTableView: UITableView {
     
     var viewModel: NewsViewModel!
-    var articles: [NewsArticlePreview] = []
+    var articles: [NewsDetail] = []
     weak var customTableViewDelegate: CustomTableViewDelegate?
 
     override init(frame: CGRect, style: UITableView.Style) {

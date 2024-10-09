@@ -8,7 +8,7 @@
 import UIKit
 
 protocol CustomTableViewDelegate: AnyObject{
-    func didSelectArticle(article: NewsArticlePreview)
+    func didSelectArticle(article: NewsDetail)
 }
 
 

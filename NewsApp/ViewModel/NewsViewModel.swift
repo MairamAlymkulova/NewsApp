@@ -8,17 +8,24 @@
 import UIKit
 
 class NewsViewModel{
-    var articles: [NewsArticlePreview] = []
+    var articles: [NewsDetail] = []
 
-    func loadNews() async {
+    func loadNews() async throws{
         do{
             let newsResponse = try await NetworkManager.shared.get(url: Constants.newsUrl) as NewsResponse
             for article in newsResponse.articles {
                 let image = await loadImage(from: article.urlToImage)
-                let newArticle = NewsArticlePreview(
+                
+                let newArticle = NewsDetail(
+                    author: article.author,
                     title: article.title,
                     description: article.description,
-                    image: image)
+                    image: image,
+                    publishedAt: article.publishedAt,
+                    content: article.content,
+                    sourceUrl: article.url,
+                    isFavorite: false
+                )
                 
                 self.articles.append(newArticle)
             }

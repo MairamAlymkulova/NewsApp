@@ -88,7 +88,7 @@ class CustomTableViewCell: UITableViewCell {
         ])
     }
 
-    func configure(articleViewModel: NewsArticlePreview){
+    func configure(articleViewModel: NewsDetail){
         self.title.text = articleViewModel.title
         self.articleDescription.text = articleViewModel.description
         if let image = articleViewModel.image{

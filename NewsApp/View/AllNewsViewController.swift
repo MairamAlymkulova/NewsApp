@@ -36,11 +36,38 @@ class AllNewsViewController: UIViewController {
         activityIndicator.startAnimating()
         Task {
             do{
-                await viewModel.loadNews()
-                tableView.config(with: self.viewModel)
+                try await viewModel.loadNews()
+                DispatchQueue.main.async {
+                                    self.activityIndicator.stopAnimating()
+                                    self.tableView.config(with: self.viewModel)
+                                }
+            } catch {
+                DispatchQueue.main.async {
+                    self.activityIndicator.stopAnimating()
+                    self.showError(error) // Показать ошибку пользователю
+                }
             }
-            activityIndicator.stopAnimating()
         }
+        
+    }
+    
+    private func showError(_ error: Error){
+        let alert = UIAlertController(
+            title: "Error",
+            message: error.localizedDescription,
+            preferredStyle: .alert
+        )
+        alert.addAction(
+            UIAlertAction(
+                title: "OK",
+                style: .default,
+                handler: nil
+            )
+        )
+        present(
+            alert,
+            animated: true,
+            completion: nil)
         
     }
     

@@ -56,8 +56,10 @@ class AppCoordinator: Coordinator {
         return navigationController
     }
     
-    func showNewsDetail(for article: NewsArticlePreview){
-        let detailViewController = NewsDetailViewController(article: article)
+    func showNewsDetail(for article: NewsDetail){
+        let viewModel = NewsDetailViewModel(news: article)
+        let detailViewController = NewsDetailViewController()
+        detailViewController.viewModel = viewModel
         if let selectedNC = tabbar.selectedViewController as? UINavigationController{
             selectedNC.pushViewController(detailViewController, animated: true)
         }
