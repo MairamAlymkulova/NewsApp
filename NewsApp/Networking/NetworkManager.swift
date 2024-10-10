@@ -22,6 +22,7 @@ class NetworkManager{
         }
         return data
     }
+    
     func get <T: Decodable> (url: String) async throws -> T {
         
         let data = try await getData(url: url)
@@ -34,4 +35,5 @@ class NetworkManager{
             throw NetworkError.decodingFaild
         }
     }
+    
 }

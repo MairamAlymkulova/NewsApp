@@ -31,19 +31,21 @@ class AppCoordinator: Coordinator {
     }
     
     private func createNavigationControler(tab: TabType) -> UINavigationController{
-        let navigationController = UINavigationController()
-        let viewController: UIViewController
+        let viewController: UIViewController = NewsListTableViewController()
         
-        switch tab {
-        case .allNews:
-            viewController = AllNewsViewController()
-            if let allNewsVC = viewController as? AllNewsViewController {
-                allNewsVC.coordinator = self
+        if let vc = viewController as? NewsListTableViewController {
+            vc.coordinator = self
+            switch tab {
+            case .allNews:
+                vc.viewModel = AllNewsViewModel()
+                
+            case .selectedNews:
+                vc.viewModel = FavouriteNewsViewModel()
             }
-        case .selectedNews:
-            viewController = SelectedNewsViewController()
         }
+        
         viewController.title = tab.title
+        let navigationController = UINavigationController()
         navigationController.navigationBar.tintColor = .label
         navigationController.viewControllers = [viewController]
         
@@ -56,7 +58,7 @@ class AppCoordinator: Coordinator {
         return navigationController
     }
     
-    func showNewsDetail(for article: NewsDetail){
+    func showNewsDetail(for article: NewsArticle){
         let viewModel = NewsDetailViewModel(news: article)
         let detailViewController = NewsDetailViewController()
         detailViewController.viewModel = viewModel

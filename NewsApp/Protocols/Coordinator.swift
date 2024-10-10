@@ -9,5 +9,5 @@ import UIKit
 
 protocol Coordinator {    
     func start()
-    func showNewsDetail(for article: NewsDetail)
+    func showNewsDetail(for article: NewsArticle)
 }

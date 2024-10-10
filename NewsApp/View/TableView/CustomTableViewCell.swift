@@ -10,6 +10,7 @@ import UIKit
 class CustomTableViewCell: UITableViewCell {
     
     static let cellID = "cellID"
+    var viewModel: NewsDetailViewModel!
     
     private var previwImg: UIImageView = {
         let image = UIImageView()
@@ -88,11 +89,14 @@ class CustomTableViewCell: UITableViewCell {
         ])
     }
 
-    func configure(articleViewModel: NewsDetail){
-        self.title.text = articleViewModel.title
-        self.articleDescription.text = articleViewModel.description
-        if let image = articleViewModel.image{
-            self.previwImg.image = image
+    func configure(article: NewsArticle){
+        
+        self.title.text = article.title
+        self.articleDescription.text = article.description
+        
+        Task{
+            let data = try await NetworkManager.shared.getData(url: article.urlToImage)
+            self.previwImg.image = UIImage(data: data)
         }
     }
     

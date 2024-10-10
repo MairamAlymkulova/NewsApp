@@ -8,13 +8,13 @@
 import UIKit
 
 
-struct NewsDetail {
-    let author: String
-    let title: String
-    let description: String
-    let image: UIImage?
-    let publishedAt: String
-    let content: String
-    let sourceUrl: String
-    var isFavorite: Bool
-}
+//struct NewsArticle {
+//    let author: String
+//    let title: String
+//    let description: String
+//    let image: UIImage?
+//    let publishedAt: String
+//    let content: String
+//    let sourceUrl: String
+//    var isFavorite: Bool
+//}

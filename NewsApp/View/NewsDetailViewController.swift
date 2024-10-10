@@ -52,6 +52,7 @@ class NewsDetailViewController: UIViewController {
     }
     
     private func setupUI() {
+
         publishedDateLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         authorLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -129,7 +130,15 @@ class NewsDetailViewController: UIViewController {
         publishedDateLabel.text = viewModel.publishedAt
         authorLabel.text = viewModel.author
         descriptionLabel.text = viewModel.description
-        imageView.image = viewModel.image
+        
+        viewModel.OnImageLoaded = { [weak self] in
+            DispatchQueue.main.async {
+                self?.imageView.image = self?.viewModel.image
+            }
+        }
+        if let image = viewModel.image {
+            imageView.image = image
+        }
     }
     
     @objc private func openSource() {
