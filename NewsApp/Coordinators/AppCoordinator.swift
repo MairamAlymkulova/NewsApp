@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AppCoordinator: Coordinator {
+class AppCoordinator: NSObject, Coordinator {
     
     let window: UIWindow?
     let tabbar: UITabBarController
@@ -24,6 +24,7 @@ class AppCoordinator: Coordinator {
     }
     
     private func setupTabBar(){
+        self.tabbar.delegate = self
         let viewControllers: [UIViewController] = TabType.allCases.map { tab in
             return createNavigationControler(tab: tab)
         }
@@ -64,6 +65,15 @@ class AppCoordinator: Coordinator {
         detailViewController.viewModel = viewModel
         if let selectedNC = tabbar.selectedViewController as? UINavigationController{
             selectedNC.pushViewController(detailViewController, animated: true)
+        }
+    }
+    
+}
+
+extension AppCoordinator: UITabBarControllerDelegate {
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        if let navController = viewController as? UINavigationController {
+            navController.popToRootViewController(animated: true)
         }
     }
 }

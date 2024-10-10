@@ -12,6 +12,15 @@ class NewsListTableViewController: UITableViewController {
     var viewModel: NewsListViewModelProtocol!
     var coordinator: AppCoordinator!
     private let activityIndicator = UIActivityIndicatorView()
+    var detailViewModel: NewsDetailViewModel?
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.onDataLoaded = { [weak self] in
+            self?.tableView.reloadData()
+        }
+        viewModel.loadNews()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,17 +28,9 @@ class NewsListTableViewController: UITableViewController {
         view.addSubview(activityIndicator)
         setup()
     }
-
-    private func activityIndicatorCofig(){
-        activityIndicator.hidesWhenStopped = true
-        activityIndicator.center = view.center
-    }
     
     func setup(){
-        viewModel.onDataLoaded = { [weak self] in
-            self?.tableView.reloadData()
-        }
-        viewModel.loadNews()
+        
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -51,7 +52,7 @@ class NewsListTableViewController: UITableViewController {
             return UITableViewCell()
         }
         let article = viewModel.articles[indexPath.row]
-        
+        cell.viewModel = NewsDetailViewModel(news: article)
         cell.configure(article: article)
         
         return cell
@@ -60,6 +61,15 @@ class NewsListTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let selectedArticle = viewModel.articles[indexPath.row]
+        self.detailViewModel = NewsDetailViewModel(news: selectedArticle)
+
+//        self.detailViewModel?.onStateChanged = { [weak self] in
+//            DispatchQueue.main.async {
+//                self?.viewModel.loadNews()
+//                self?.tableView.reloadData()
+//            }
+//        }
+
         coordinator.showNewsDetail(for: selectedArticle)
     }
 }

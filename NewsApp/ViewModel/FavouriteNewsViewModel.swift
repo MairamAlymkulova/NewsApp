@@ -8,15 +8,20 @@
 import Foundation
 
 class FavouriteNewsViewModel: NewsListViewModelProtocol{
+    func updateArticle(at index: Int, with newsArticle: NewsArticle) {
+        
+    }
+    
     var onDataLoaded: (() -> Void)?
     
     var articles: [NewsArticle] = []
     
-    func loadNews() {
-        
+    func loadFromCoreData() async {
+        articles.removeAll()
         let news = CoreDataManager.shared.fetchFavoriteArticles()
         
         for article in news {
+
             guard let title = article.title,
                   let content = article.content,
                   let publishedAt = article.publishedDate,
@@ -30,6 +35,7 @@ class FavouriteNewsViewModel: NewsListViewModelProtocol{
             else {
                 continue
             }
+            
             let newsSource = NewsSource(
                 id: sourceId,
                 name: sourceName
@@ -43,10 +49,18 @@ class FavouriteNewsViewModel: NewsListViewModelProtocol{
                 urlToImage: urlToImage,
                 publishedAt: publishedAt,
                 content: content,
-                isFavorite: true
+                isFavorite: article.isFavourite
             )
-            
             self.articles.append(newsArticle)
+        }
+    }
+    func loadNews() {
+        Task{
+            await loadFromCoreData()
+            DispatchQueue.main.async {
+                self.onDataLoaded?()
+            }
+            
         }
     }
     

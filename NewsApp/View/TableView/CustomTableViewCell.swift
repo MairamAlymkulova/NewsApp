@@ -14,6 +14,7 @@ class CustomTableViewCell: UITableViewCell {
     
     private var previwImg: UIImageView = {
         let image = UIImageView()
+        image.image = nil
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
         return image
@@ -93,11 +94,22 @@ class CustomTableViewCell: UITableViewCell {
         
         self.title.text = article.title
         self.articleDescription.text = article.description
-        
-        Task{
-            let data = try await NetworkManager.shared.getData(url: article.urlToImage)
-            self.previwImg.image = UIImage(data: data)
+        self.previwImg.image = nil
+        if let image = viewModel.image {
+            previwImg.image = image
         }
+        else{
+            viewModel.OnImageLoaded = { [weak self] in
+                DispatchQueue.main.async {
+                    self?.previwImg.image = self?.viewModel.image
+                }
+            }
+        }
+        
+//        Task{
+//            let data = try await NetworkManager.shared.getData(url: article.urlToImage)
+//            self.previwImg.image = UIImage(data: data)
+//        }
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {

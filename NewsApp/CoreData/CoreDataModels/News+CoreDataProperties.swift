@@ -24,7 +24,6 @@ extension News {
     @NSManaged public var publishedDate: String?
     @NSManaged public var sourceUrl: String?
     @NSManaged public var title: String?
-    @NSManaged public var id: String?
     @NSManaged public var source: Source?
 
 }

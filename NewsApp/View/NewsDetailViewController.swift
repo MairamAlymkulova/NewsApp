@@ -44,6 +44,7 @@ class NewsDetailViewController: UIViewController {
     private let imageView = UIImageView()
     private let sourceButton = UIButton(type: .system)
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -110,14 +111,14 @@ class NewsDetailViewController: UIViewController {
     private func sourceButtonConfig(){
         sourceButton.setTitle("Read full article", for: .normal)
         sourceButton.addTarget(self, action: #selector(openSource), for: .touchUpInside)
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: viewModel.isFavorite ? UIImage(systemName: "star.fill") : UIImage(systemName: "star"),
-            style: .plain,
-            target: self,
-            action: #selector(toggleFavorite)
-        )
-        
+        if let isFavorite = viewModel.isFavorite{
+            navigationItem.rightBarButtonItem = UIBarButtonItem(
+                image: isFavorite ? UIImage(systemName: "star.fill") : UIImage(systemName: "star"),
+                style: .plain,
+                target: self,
+                action: #selector(toggleFavorite)
+            )
+        }
         NSLayoutConstraint.activate([
             sourceButton.leadingAnchor.constraint(equalTo: descriptionLabel.leadingAnchor),
             
@@ -153,7 +154,9 @@ class NewsDetailViewController: UIViewController {
     @objc private func toggleFavorite() {
         viewModel.toggleSelection()
         
-        navigationItem.rightBarButtonItem?.image = viewModel.isFavorite ? UIImage(systemName: "star.fill") : UIImage(systemName: "star")
+        if let isFavorite = viewModel.isFavorite{
+            navigationItem.rightBarButtonItem?.image = isFavorite ? UIImage(systemName: "star.fill") : UIImage(systemName: "star")
+        }
     }
 }
 

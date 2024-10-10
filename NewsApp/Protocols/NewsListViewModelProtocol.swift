@@ -11,4 +11,5 @@ protocol NewsListViewModelProtocol{
     var articles: [NewsArticle] { get }
     var onDataLoaded: (() -> Void)? {get set}
     func loadNews()
+    func updateArticle(at index: Int, with newsArticle: NewsArticle)
 }

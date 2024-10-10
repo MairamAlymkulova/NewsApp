@@ -11,8 +11,10 @@ import CoreData
 class NewsDetailViewModel {
     var news: NewsArticle
     
+    var onStateChanged: (() -> Void)?
+    
     var OnImageLoaded: (() -> Void)?
-
+    
     var publishedAt: String {
         return news.publishedAt
     }
@@ -33,19 +35,13 @@ class NewsDetailViewModel {
     var sourceUrl: String? {
         return news.url
     }
-    var isFavorite: Bool {
+    var isFavorite: Bool? {
         get {
             
-            return news.isFavorite ?? false
+            return news.isFavorite
         }
         set {
             news.isFavorite = newValue
-            if newValue {
-                saveFavoriteArticle()
-            }
-            else{
-                removeFavoriteArticle()
-            }
         }
     }
     private var image_: UIImage?
@@ -65,50 +61,26 @@ class NewsDetailViewModel {
     }
     
     func toggleSelection(){
-        self.isFavorite.toggle()
+        self.isFavorite?.toggle()
+
+        if self.isFavorite == true {
+            saveFavoriteArticle()
+        }
+        else{
+            removeFavoriteArticle()
+        }
+        self.onStateChanged?()
     }
     
     private func saveFavoriteArticle() {
-        let context = CoreDataManager.shared.context
-        let favoriteArticle = News(context: context)
-        
-        favoriteArticle.title = news.title
-        favoriteArticle.content = news.content
-        favoriteArticle.publishedDate = news.publishedAt
-        favoriteArticle.urlToimage = news.urlToImage
-        favoriteArticle.author = news.author
-        favoriteArticle.newsDescription = news.description
-        favoriteArticle.sourceUrl = news.url
-        favoriteArticle.isFavourite = true
-        
-        
-        do {
-            try context.save()
-            print("Статья сохранена в избранное.")
-        } catch {
-            print("Ошибка при сохранении статьи: \(error.localizedDescription)")
-        }
+        CoreDataManager.shared.saveFavoriteArticle(news: self.news)
     }
     
     private func removeFavoriteArticle() {
-        let context = CoreDataManager.shared.context
-        let fetchRequest: NSFetchRequest<News> = News.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "title == %@", news.title)
-        
-        do {
-            let results = try context.fetch(fetchRequest)
-            for article in results {
-                context.delete(article)
-            }
-            try context.save()
-            print("Статья удалена из избранного")
-        } catch {
-            print("Ошибка при удалении статьи: \(error.localizedDescription)")
-        }
+        CoreDataManager.shared.removeFavoriteArticle(news: self.news)
     }
     
     private func loadImage(){
-        
         Task{
             ImageLoader.shared.loadImage(from: news.urlToImage) { [weak self] loadedImage in
                 self?.image_ = loadedImage
